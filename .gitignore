@@ -2,3 +2,4 @@
 __pycache__
 .venv
 .env
+print_db_string.py

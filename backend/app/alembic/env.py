@@ -5,7 +5,6 @@ from sqlalchemy import pool
 
 from sqlmodel import SQLModel
 from app.models.user import User
-from app.models.refresh_token import RefreshToken
 
 from alembic import context
 
