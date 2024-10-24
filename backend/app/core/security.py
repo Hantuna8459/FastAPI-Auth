@@ -8,20 +8,19 @@ from backend.app.core.config import settings
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-def create_access_token(subject: str | Any, express_delta: timedelta)->str:
-    expire = datetime.now(timezone.utc)+express_delta
+def create_access_token(subject: str | Any, expires_delta: timedelta)->str:
+    expire = datetime.now(timezone.utc)+expires_delta
     to_encode = {
         "exp":expire, 
-        "sub":str(subject)
+        "sub":str(subject),
     }
     encoded_access = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
     return encoded_access
 
-def create_refresh_token(subject: str | Any, express_delta: timedelta)->str:
-    expire = datetime.now(timezone.utc)+express_delta
+def create_refresh_token(expires_delta: timedelta)->str:
+    expire = datetime.now(timezone.utc)+expires_delta
     to_encode = {
-        "exp":expire, 
-        "sub":str(subject),
+        "exp":expire,
         "type":"refresh",
     }
     encoded_refresh = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)

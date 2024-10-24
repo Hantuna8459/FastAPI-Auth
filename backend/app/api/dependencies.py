@@ -7,10 +7,12 @@ from typing import Annotated
 from pydantic import ValidationError
 from sqlmodel import Session
 
-from backend.app.core.database import engine
-from backend.app.models.user import User, TokenPayload 
-from backend.app.core.config import settings
-from backend.app.core import security
+from ..core.database import engine
+from ..models.user import User
+from ..models.token import TokenPayload
+
+from ..core.config import settings
+from ..core import security
 
 from fastapi.security import OAuth2PasswordBearer
 from fastapi import Depends, HTTPException, status

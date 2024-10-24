@@ -1,14 +1,26 @@
-from datetime import timedelta
-from typing import Annotated, Any
+from typing import Any
 
-from fastapi import APIRouter, Depends, HTTPException
-from fastapi.responses import HTMLResponse
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi import APIRouter, HTTPException
 
-from app.core.config import settings
-from app.api.dependencies import CurrentUser, SessionDep, TokenDep
-from app.models.user import Token
-from app import crud
+from ..models.user import UserPublic, User
+from ..api.dependencies import CurrentUser, SessionDep, TokenDep
 
 router = APIRouter()
+
+@router.get("/profile/{user_id}", response_model=UserPublic)
+def get_user(
+    user_id:int,
+    session: SessionDep,
+    current_user: CurrentUser
+    ) -> Any:
+    user = session.get(User, user_id)
+    if user == current_user:
+        return user
+    if not current_user.is_superuser:
+        raise HTTPException(
+            status_code=403,
+            detail="The user doesn't have enough privileges",
+        )
+    return user
+
     
