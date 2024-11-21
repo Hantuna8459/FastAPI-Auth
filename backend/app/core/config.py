@@ -40,6 +40,10 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES:int = 15 # change later
     REFRESH_TOKEN_EXPIRE_MINUTES:int = 60*24 # 1 day (change later)
     
-    ALGORITHM:str
+    # settings for initial superuser
+    FIRST_SUPERUSER:str
+    FIRST_SUPERUSER_PASSWORD:str
+    
+    ALGORITHM:str = 'RS256'
     
 settings = Settings()

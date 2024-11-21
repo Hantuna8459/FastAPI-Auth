@@ -11,7 +11,6 @@ from backend.app.core.security import (
 )
 from ..core.config import settings
 from ..api.dependencies import SessionDep, CurrentUser
-from ..models.user import UserPublic
 from ..models.token import Token
 from .. import crud
 
