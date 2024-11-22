@@ -21,12 +21,18 @@ class User(SQLModel, table=True):
     first_name: str|None = Field(max_length=255,nullable=True, default=None, index=True)
     last_name: str|None = Field(max_length=255,nullable=True, default=None, index=True)
     address: str|None = Field(max_length=255,nullable=True, default=None, index=True)
+    date_joined: datetime|None = Field(default_factory=lambda:datetime.now(timezone.utc))
+    updated_at: datetime|None = Field(
+        default=None,
+        nullable=True,
+        sa_column_kwargs={"onupdate":func.now()}
+    )
     
     is_root: "UserRoot" = Relationship(back_populates="user",
+                                       cascade_delete=True,
                                        sa_relationship_kwargs={
                                            "uselist": False,
-                                           "lazy": "selectin",
-                                           "cascade":"all, delete-orphan",
+                                           "lazy": "joined",
                                         })
     
 class UserRoot(SQLModel, table=True):
@@ -37,31 +43,28 @@ class UserRoot(SQLModel, table=True):
     )
     is_active: bool = Field(default=True, index=True)
     is_superuser: bool = Field(default=False, index=True)
-    date_joined: datetime|None = Field(default_factory=lambda:datetime.now(timezone.utc))
-    updated_at: datetime|None = Field(
-        default=None,
-        nullable=True,
-        sa_column_kwargs={"onupdate":func.now()}
-    )
     last_login: datetime|None = Field(
         default=None,
         nullable=True,
-        sa_column_kwargs={"onupdate":func.now()}
     )
     
     user: "User" = Relationship(back_populates="is_root")
     
-class UserPrivate(SQLModel):
-    id: uuid.UUID
+class LoginRequest(SQLModel):
+    username_or_email: str
     password: str
-    is_active: bool
-    is_superuser: bool
+    
+class UserCreate(SQLModel):
+    username: str = Field(unique=True, min_length=6, max_length=40)
+    email: EmailStr|None = Field(default=None, nullable=True, unique=True, max_length=255)
+    password: str = Field(max_length=255)
+    first_name: str|None = Field(default=None, nullable=True, max_length=255)
+    last_name: str|None = Field(default=None, nullable=True, max_length=255)
+    address: str|None = Field(default=None, nullable=True, max_length=255)
+    is_root: object
     
 class UserRegister(SQLModel):
     username: str = Field(unique=True, min_length=6, max_length=40)
-    email: EmailStr|None = Field(default=None, unique=True, max_length=255)
-    full_name: str|None = Field(default=None, max_length=255)
-    address: str|None = Field(default=None, max_length=255)
     password: str = Field(max_length=255)
     password_confirm: str = Field(max_length=255)
     
@@ -80,16 +83,6 @@ class UserRegister(SQLModel):
         if 'password' in info.data and value != info.data["password"]:
             raise ValueError('passwords do not match')
         return value
-    
-class UserCreate(SQLModel):
-    username: str = Field(unique=True, index=True, max_length=40)
-    email: EmailStr|None = Field(
-        default=None, unique=True, index=True, max_length=255
-    )
-    password:str = Field(index=True)
-    full_name: str|None = Field(default=None, max_length=255, index=True)
-    address: str|None = Field(default=None, max_length=255, index=True)
-    is_root: object
        
 class UserUpdateInfo(SQLModel):
     username: str = Field(unique=True, min_length=6, max_length=40)

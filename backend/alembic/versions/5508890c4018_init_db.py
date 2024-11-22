@@ -1,8 +1,8 @@
-"""initial database
+"""init db
 
-Revision ID: 77ccd877bf7a
+Revision ID: 5508890c4018
 Revises: 
-Create Date: 2024-11-20 18:00:08.571998
+Create Date: 2024-11-22 16:26:54.209243
 
 """
 from typing import Sequence, Union
@@ -13,7 +13,7 @@ import sqlmodel.sql.sqltypes
 
 
 # revision identifiers, used by Alembic.
-revision: str = '77ccd877bf7a'
+revision: str = '5508890c4018'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -29,6 +29,8 @@ def upgrade() -> None:
     sa.Column('first_name', sqlmodel.sql.sqltypes.AutoString(length=255), nullable=True),
     sa.Column('last_name', sqlmodel.sql.sqltypes.AutoString(length=255), nullable=True),
     sa.Column('address', sqlmodel.sql.sqltypes.AutoString(length=255), nullable=True),
+    sa.Column('date_joined', sa.DateTime(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_user_address'), 'user', ['address'], unique=False)
@@ -42,8 +44,6 @@ def upgrade() -> None:
     sa.Column('user_id', sa.Uuid(), nullable=False),
     sa.Column('is_active', sa.Boolean(), nullable=False),
     sa.Column('is_superuser', sa.Boolean(), nullable=False),
-    sa.Column('date_joined', sa.DateTime(), nullable=True),
-    sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.Column('last_login', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id'),

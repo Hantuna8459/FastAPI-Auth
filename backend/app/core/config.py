@@ -44,6 +44,6 @@ class Settings(BaseSettings):
     FIRST_SUPERUSER:str
     FIRST_SUPERUSER_PASSWORD:str
     
-    ALGORITHM:str = 'RS256'
+    ALGORITHM:str = 'HS256'
     
 settings = Settings()
