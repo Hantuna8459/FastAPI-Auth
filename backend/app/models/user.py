@@ -17,7 +17,7 @@ class User(SQLModel, table=True):
     email: EmailStr|None = Field(
         default=None, unique=True, index=True, max_length=255
     )
-    hashed_password:str = Field(nullable=False)
+    hashed_password:str = Field(nullable=False, max_length=255)
     first_name: str|None = Field(max_length=255,nullable=True, default=None, index=True)
     last_name: str|None = Field(max_length=255,nullable=True, default=None, index=True)
     address: str|None = Field(max_length=255,nullable=True, default=None, index=True)
@@ -54,6 +54,10 @@ class LoginRequest(SQLModel):
     username_or_email: str
     password: str
     
+class UserRootCreate(SQLModel):
+    is_active: bool = Field(default=True)
+    is_superuser: bool = Field(default=False)
+    
 class UserCreate(SQLModel):
     username: str = Field(unique=True, min_length=6, max_length=40)
     email: EmailStr|None = Field(default=None, nullable=True, unique=True, max_length=255)
@@ -61,7 +65,7 @@ class UserCreate(SQLModel):
     first_name: str|None = Field(default=None, nullable=True, max_length=255)
     last_name: str|None = Field(default=None, nullable=True, max_length=255)
     address: str|None = Field(default=None, nullable=True, max_length=255)
-    is_root: object
+    is_root: UserRootCreate | None = Field(default=None)
     
 class UserRegister(SQLModel):
     username: str = Field(unique=True, min_length=6, max_length=40)

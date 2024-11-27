@@ -15,7 +15,18 @@ class Settings(BaseSettings):
         env_ignore_empty=True,
         extra="ignore"
     ) # Pydantic .env support
-    SECRET_KEY:str
+    PRIVATE_KEY:str
+    PUBLIC_KEY:str
+    
+    @property
+    def private_key(self) -> str:
+        """Convert escaped \\n to actual newlines in the private key."""
+        return self.PRIVATE_KEY.replace("\\n", "\n")
+    
+    @property
+    def public_key(self) -> str:
+        """Convert escaped \\n to actual newlines in the public key."""
+        return self.PUBLIC_KEY.replace("\\n", "\n")
     
     # settings for db 
     DB_NAME:str
@@ -44,6 +55,6 @@ class Settings(BaseSettings):
     FIRST_SUPERUSER:str
     FIRST_SUPERUSER_PASSWORD:str
     
-    ALGORITHM:str = 'HS256'
+    ALGORITHM:str = 'RS256'
     
 settings = Settings()
